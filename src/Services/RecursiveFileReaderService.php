@@ -24,30 +24,27 @@ readonly class RecursiveFileReaderService
             );
 
             foreach ($iterator as $file) {
-                $relativePath = $iterator->getSubPathName(); // Gets path relative to $directory
+                $relativePath = $iterator->getSubPathName();
 
+                $parts = explode(DIRECTORY_SEPARATOR, $relativePath);
                 if ($file->isDir()) {
-                    // Ensure directories are keys in the array
-                    $parts = explode(DIRECTORY_SEPARATOR, $relativePath);
-                    $subArray = &$result;
+                    $readPaths = &$result;
                     foreach ($parts as $part) {
-                        if (!isset($subArray[$part])) {
-                            $subArray[$part] = [];
+                        if (!isset($readPaths[$part])) {
+                            $readPaths[$part] = [];
                         }
-                        $subArray = &$subArray[$part];
+                        $readPaths = &$readPaths[$part];
                     }
                 } else {
-                    // Add files to the correct directory structure
-                    $parts = explode(DIRECTORY_SEPARATOR, $relativePath);
                     $filename = array_pop($parts);
-                    $subArray = &$result;
+                    $readPaths = &$result;
                     foreach ($parts as $part) {
-                        if (!isset($subArray[$part])) {
-                            $subArray[$part] = [];
+                        if (!isset($readPaths[$part])) {
+                            $readPaths[$part] = [];
                         }
-                        $subArray = &$subArray[$part];
+                        $readPaths = &$readPaths[$part];
                     }
-                    $subArray[] = $filename; // Files are stored as values
+                    $readPaths[] = $filename;
                 }
             }
         } catch (\UnexpectedValueException $exception) {

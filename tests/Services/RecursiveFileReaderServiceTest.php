@@ -46,9 +46,10 @@ class RecursiveFileReaderServiceTest extends TestCase
         $readPaths = $this->fileReader->readDirectoryRecursively();
 
         $this->assertEquals([
-            md5($this->tempDir . '/test.txt') => $this->tempDir . '/test.txt',
-            md5($this->tempDir . '/test.txt') => $this->tempDir . '/test.txt',
-            md5($this->tempDir . '/test.txt') => $this->tempDir . '/test.txt',
+            'subdir' => [
+                'test2.txt'
+            ],
+            'test.txt'
         ], $readPaths);
     }
 }
