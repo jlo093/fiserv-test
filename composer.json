@@ -1,0 +1,15 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Fiserv\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Fiserv\\Tests\\": "tests/"
+        }
+    }
+}
