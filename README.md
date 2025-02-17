@@ -48,10 +48,10 @@ Use the ``SQL command`` feature of ``adminer`` to execute the following SQL:
 
 ````sql
 CREATE TABLE `filesystem` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `path` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `path` (`path`)
+`id` int NOT NULL AUTO_INCREMENT,
+`path` varchar(255) NOT NULL,
+PRIMARY KEY (`id`),
+UNIQUE KEY `path` (`path`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ````
 
