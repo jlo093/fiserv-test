@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   php:
-    image: php:8.4-fpm
+    build: .
     volumes:
       - ./:/var/www
     networks:

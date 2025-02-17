@@ -16,6 +16,7 @@ if ($_POST) {
 ?>
 <html>
 <head>
+    <title>Files</title>
 </head>
 <body>
 <form method="post" action="index.php">
@@ -26,7 +27,7 @@ if ($_POST) {
 <table>
     <?php foreach ($filesFound as $file): ?>
     <tr>
-        <td><?php echo $file; ?></td>
+        <td><?php echo $file['path']; ?></td>
     </tr>
     <?php endforeach; ?>
 </table>

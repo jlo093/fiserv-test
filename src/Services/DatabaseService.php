@@ -39,7 +39,7 @@ class DatabaseService
 
     public function fetchAll($sql, $params = []): array
     {
-        return $this->query($sql, $params)->fetchAll();
+        return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function fetchOne($sql, $params = []) {

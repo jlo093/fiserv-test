@@ -22,8 +22,8 @@ class FileRepository implements FileRepositoryInterface
     public function findByPath(string $path): array
     {
         return $this->db->fetchAll(
-            'SELECT * FROM files WHERE path LIKE ?',
-            '%' . $path . '%'
+            'SELECT * FROM filesystem WHERE path LIKE ?',
+            ['%' . $path . '%']
         );
     }
 }

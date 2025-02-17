@@ -22,10 +22,8 @@ class ConfigService
             return null;
         }
 
-        $config = require_once __DIR__ . '/../../config/' . $parts[0] . '.php';
-if ($key === 'database.database') {
-    die(print_r($config));
-}
+        $config = require __DIR__ . '/../../config/' . $parts[0] . '.php';
+
         if (isset($config[$parts[1]])) {
             self::$config[$key] = $config[$parts[1]];
 
