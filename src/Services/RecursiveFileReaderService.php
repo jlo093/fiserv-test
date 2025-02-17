@@ -68,7 +68,7 @@ readonly class RecursiveFileReaderService
         return $output;
     }
 
-    public function storeFileTree(array $files, string $path, int $depth = 0): void
+    public function storeFileTree(array $files, string $path = '', int $depth = 0): void
     {
         foreach ($files as $key => $value) {
             if (is_array($value)) {

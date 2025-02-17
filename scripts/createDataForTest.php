@@ -26,4 +26,4 @@ if (is_file('result.txt')) {
 
 file_put_contents('result.txt', $fileReader->createVisualFileTree($files));
 
-$fileReader->storeFileTree($files, '');
+$fileReader->storeFileTree($files);

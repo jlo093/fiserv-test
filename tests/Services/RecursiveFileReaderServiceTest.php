@@ -2,6 +2,7 @@
 
 namespace Fiserv\Tests\Services;
 
+use Fiserv\Models\File;
 use Fiserv\Repositories\FileRepository;
 use Fiserv\Services\DatabaseService;
 use Fiserv\Services\RecursiveFileReaderService;
@@ -10,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 class RecursiveFileReaderServiceTest extends TestCase
 {
     private $tempDir;
-    private RecursiveFileReaderService $fileReader;
 
     protected function setUp(): void
     {
@@ -20,10 +20,6 @@ class RecursiveFileReaderServiceTest extends TestCase
         mkdir($this->tempDir . '/subdir');
         file_put_contents($this->tempDir . '/test.txt', 'A coding test for fiserv');
         file_put_contents($this->tempDir . '/subdir/test2.txt', 'Yet another file');
-
-        $this->fileReader = new RecursiveFileReaderService($this->tempDir, new FileRepository(
-            new DatabaseService()
-        ));
     }
 
     protected function tearDown(): void
@@ -47,13 +43,32 @@ class RecursiveFileReaderServiceTest extends TestCase
 
     public function testRecursiveReading()
     {
-        $readPaths = $this->fileReader->readDirectoryRecursively();
+        $fileRepositoryMock = $this->createMock(FileRepository::class);
+
+        $fileReader = new RecursiveFileReaderService($this->tempDir, $fileRepositoryMock);
+
+        $readPaths = $fileReader->readDirectoryRecursively();
 
         $this->assertEquals([
             'subdir' => [
-                'test2.txt'
+                'test2.txt' => 'test2.txt'
             ],
-            'test.txt'
+            'test.txt' => 'test.txt'
         ], $readPaths);
+    }
+
+    public function testCreatingFileTree()
+    {
+        $fileRepositoryMock = $this->createMock(FileRepository::class);
+
+        $fileReader = new RecursiveFileReaderService($this->tempDir, $fileRepositoryMock);
+
+        $readPaths = $fileReader->readDirectoryRecursively();
+        $fileTree = $fileReader->createVisualFileTree($readPaths);
+
+        // Our file-tree with indents and newlines
+        $expected = "subdir\n\ttest2.txt\ntest.txt\n";
+
+        $this->assertEquals($expected, $fileTree);
     }
 }
