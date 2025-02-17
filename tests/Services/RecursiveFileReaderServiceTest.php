@@ -71,4 +71,29 @@ class RecursiveFileReaderServiceTest extends TestCase
 
         $this->assertEquals($expected, $fileTree);
     }
+
+    public function testStoringFileTree()
+    {
+        $fileRepositoryMock = $this->createMock(FileRepository::class);
+
+        $file1 = new File();
+        $file1->path = 'test.txt';
+
+        $capturedArgument = null;
+
+        $fileRepositoryMock->expects($this->exactly(3))
+            ->method('updateOrCreate')
+            ->willReturnCallback(function ($arg) use ($file1, &$capturedArgument) {
+                $capturedArgument = $arg;
+                return $arg instanceof File && $arg->path === $file1->path;
+            });
+
+        $fileReader = new RecursiveFileReaderService($this->tempDir, $fileRepositoryMock);
+
+        $readPaths = $fileReader->readDirectoryRecursively();
+        $fileReader->storeFileTree($readPaths);
+
+        $this->assertInstanceOf(File::class, $capturedArgument);
+        $this->assertEquals('/test.txt', $capturedArgument->path);
+    }
 }
