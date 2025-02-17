@@ -1,5 +1,7 @@
 <?php
 
+use Fiserv\Repositories\FileRepository;
+use Fiserv\Services\DatabaseService;
 use Fiserv\Services\RecursiveFileReaderService;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -13,7 +15,9 @@ if (!empty($argv[1])) {
 
 echo "Trying to load file system/generating tree from {$pathToLoad}." . PHP_EOL;
 
-$fileReader = new RecursiveFileReaderService($pathToLoad);
+$fileReader = new RecursiveFileReaderService($pathToLoad, new FileRepository(
+    new DatabaseService()
+));
 $files = $fileReader->readDirectoryRecursively();
 
 if (is_file('result.txt')) {
@@ -22,3 +26,4 @@ if (is_file('result.txt')) {
 
 file_put_contents('result.txt', $fileReader->createVisualFileTree($files));
 
+$fileReader->storeFileTree($files, '');

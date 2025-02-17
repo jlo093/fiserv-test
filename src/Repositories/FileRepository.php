@@ -17,6 +17,8 @@ class FileRepository implements FileRepositoryInterface
                 $file->path, $file->path
             ]
         );
+
+        return true;
     }
 
     public function findByPath(string $path): array

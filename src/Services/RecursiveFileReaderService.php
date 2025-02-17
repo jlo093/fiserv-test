@@ -3,12 +3,17 @@
 namespace Fiserv\Services;
 
 use FilesystemIterator;
+use Fiserv\Models\File;
+use Fiserv\Repositories\FileRepository;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 
 readonly class RecursiveFileReaderService
 {
-    public function __construct(private string $rootDirectory) {}
+    public function __construct(
+        private string $rootDirectory,
+        private FileRepository $fileRepository
+    ) {}
 
     public function readDirectoryRecursively(): array
     {
@@ -61,5 +66,28 @@ readonly class RecursiveFileReaderService
         }
 
         return $output;
+    }
+
+    public function storeFileTree(array $files, string $path, int $depth = 0): void
+    {
+        foreach ($files as $key => $value) {
+            if (is_array($value)) {
+                $dirPath = rtrim($path . DIRECTORY_SEPARATOR . $key, DIRECTORY_SEPARATOR);
+
+                $file = new File();
+                $file->path = $dirPath;
+
+                $this->fileRepository->updateOrCreate($file);
+
+                $this->storeFileTree($value, $dirPath);
+            } else {
+                $filePath = $path . DIRECTORY_SEPARATOR . $value;
+
+                $file = new File();
+                $file->path = $filePath;
+
+                $this->fileRepository->updateOrCreate($file);
+            }
+        }
     }
 }

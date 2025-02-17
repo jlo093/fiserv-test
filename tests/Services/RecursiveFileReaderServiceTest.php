@@ -2,6 +2,8 @@
 
 namespace Fiserv\Tests\Services;
 
+use Fiserv\Repositories\FileRepository;
+use Fiserv\Services\DatabaseService;
 use Fiserv\Services\RecursiveFileReaderService;
 use PHPUnit\Framework\TestCase;
 
@@ -19,7 +21,9 @@ class RecursiveFileReaderServiceTest extends TestCase
         file_put_contents($this->tempDir . '/test.txt', 'A coding test for fiserv');
         file_put_contents($this->tempDir . '/subdir/test2.txt', 'Yet another file');
 
-        $this->fileReader = new RecursiveFileReaderService($this->tempDir);
+        $this->fileReader = new RecursiveFileReaderService($this->tempDir, new FileRepository(
+            new DatabaseService()
+        ));
     }
 
     protected function tearDown(): void
