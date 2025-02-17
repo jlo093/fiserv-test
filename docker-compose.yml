@@ -3,6 +3,7 @@ version: '3.9'
 services:
   php:
     build: .
+    container_name: fiserv-test-php
     volumes:
       - ./:/var/www
     networks:

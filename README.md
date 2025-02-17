@@ -4,8 +4,7 @@ TBD
 
 ## Solution
 
-The task specifically requests to create a **database design** to store the file/directory information. Personally, I would have preferred to use **Redis** over traditional databases, storing entries with a cache key consisting of a prefix i.e. "file:" and then a hash.
-
+TBD
 
 ## Setup
 
@@ -15,6 +14,18 @@ For ease of use and testing I have provided a docker-compose configuration that'
 - A MySQL container
 - An adminer container (tool to visually work with the database)
 
+After creating the containers using:
+````
+docker compose up -d
+````
+
+Navigate to:
+http://localhost:8080/?server=fiserv-test-mysql&username=test&db=fiserv
+
+Use the password: ``test``
+
+Use the ``SQL command`` feature of ``adminer`` to execute the following SQL:
+
 ````sql
 CREATE TABLE `filesystem` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -23,6 +34,18 @@ CREATE TABLE `filesystem` (
   KEY `path` (`path`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ````
+
+Run the provided script to create the requested ``.txt`` file and fill the database with file entries:
+
+````
+docker exec fiserv-test-php php scripts/createDataForTest.php
+````
+
+This will build a file tree based on the files in the PHP container.
+
+You can find the ``.txt`` file in the root of the project directory after execution.
+
+You can find the web ui to search files here:  http://localhost/index.php
 
 ## Supplementary Notes
 
