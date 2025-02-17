@@ -12,7 +12,7 @@ readonly class RecursiveFileReaderService
 
     public function readDirectoryRecursively(): array
     {
-        $readPaths = [];
+        $readPaths = []; // Ensure the result array is initialized
 
         try {
             $iterator = new RecursiveIteratorIterator(
@@ -25,32 +25,41 @@ readonly class RecursiveFileReaderService
 
             foreach ($iterator as $file) {
                 $relativePath = $iterator->getSubPathName();
-
                 $parts = explode(DIRECTORY_SEPARATOR, $relativePath);
-                if ($file->isDir()) {
-                    $readPaths = &$result;
-                    foreach ($parts as $part) {
-                        if (!isset($readPaths[$part])) {
-                            $readPaths[$part] = [];
-                        }
-                        $readPaths = &$readPaths[$part];
+
+                $current = &$readPaths;
+
+                foreach ($parts as $part) {
+                    if (!isset($current[$part])) {
+                        $current[$part] = [];
                     }
-                } else {
-                    $filename = array_pop($parts);
-                    $readPaths = &$result;
-                    foreach ($parts as $part) {
-                        if (!isset($readPaths[$part])) {
-                            $readPaths[$part] = [];
-                        }
-                        $readPaths = &$readPaths[$part];
-                    }
-                    $readPaths[] = $filename;
+                    $current = &$current[$part];
+                }
+
+                if (!$file->isDir()) {
+                    $current = $file->getFilename();
                 }
             }
         } catch (\UnexpectedValueException $exception) {
-
+            // Handle exception properly if needed
         }
 
         return $readPaths;
+    }
+
+    public function createVisualFileTree(array $files, int $depth = 0): string
+    {
+        $output = '';
+
+        foreach ($files as $key => $value) {
+            if (is_array($value)) {
+                $output .= str_repeat("\t", $depth) . $key . "\n";
+                $output .= $this->createVisualFileTree($value, $depth + 1);
+            } else {
+                $output .= str_repeat("\t", $depth) . $value . "\n";
+            }
+        }
+
+        return $output;
     }
 }

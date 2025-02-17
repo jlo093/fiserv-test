@@ -12,9 +12,9 @@ class FileRepository implements FileRepositoryInterface
     public function updateOrCreate(File $file): bool
     {
         $this->db->query(
-            "",
+            "INSERT INTO filesystem(path) VALUES(?) ON DUPLICATE KEY UPDATE path = ?",
             [
-                $file->path
+                $file->path, $file->path
             ]
         );
     }
