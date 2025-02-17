@@ -1,8 +1,35 @@
 <?php
 
+use Fiserv\Repositories\FileRepository;
+use Fiserv\Services\DatabaseService;
+
 require __DIR__ . '/../vendor/autoload.php';
 
-use Fiserv\Services\RecursiveFileReaderService;
+$fileRepo = new FileRepository(
+    new DatabaseService()
+);
 
-$x = new RecursiveFileReaderService('/');
-$x->readDirectoryRecursively();
+if ($_POST) {
+    $filesFound = $fileRepo->findByPath($_POST['name']);
+}
+
+?>
+<html>
+<head>
+</head>
+<body>
+<form method="post" action="index.php">
+    <input type="text" name="name" placeholder="File/directory name" />
+    <input type="submit" value="Submit" />
+</form>
+<?php if (!empty($filesFound)): ?>
+<table>
+    <?php foreach ($filesFound as $file): ?>
+    <tr>
+        <td><?php echo $file; ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+<?php endif; ?>
+</body>
+</html>
